@@ -1,16 +1,24 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.spring.kotlin)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependencyManagement)
 }
 
 dependencies {
-    implementation(rootProject.libs.spring.boot.starter)
-    implementation(rootProject.libs.spring.webMVC)
-    implementation(rootProject.libs.kotlin.reflect)
-    implementation(rootProject.projects.tsBackendCommon)
+    implementation(projects.tsBackendCommon)
+
+    implementation(libs.kotlin.reflect)
+
+    implementation(libs.spring.boot.starter)
+    implementation(libs.spring.boot.webMVC)
+    implementation(libs.spring.boot.exposed)
+    implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.javaTime)
+
+    runtimeOnly(libs.postgresqlDriver)
 }
 
 kotlin {
