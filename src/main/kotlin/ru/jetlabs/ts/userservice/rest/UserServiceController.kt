@@ -7,18 +7,18 @@ import ru.jetlabs.ts.userservice.models.UserResponseForm
 import ru.jetlabs.ts.userservice.models.UserUpdatePasswordForm
 import ru.jetlabs.ts.userservice.service.UserService
 
-const val USERS = "/users"
+const val USERS = "users"
 
-const val ID = "{id}"
+const val ID = "id"
 
 const val CHANGE_PASSWORD = "changepass"
 
 @RestController
-@RequestMapping(USERS)
+@RequestMapping("/$USERS")
 class UserServiceController(
     private val userService: UserService
 ) {
-    @GetMapping("/$ID")
+    @GetMapping("/{$ID}")
     fun getById(@PathVariable id: Long): ResponseEntity<UserResponseForm> =
         userService.getById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.noContent().build()
 
