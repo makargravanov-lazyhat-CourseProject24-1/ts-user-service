@@ -1,15 +1,20 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.spring.kotlin)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependencyManagement)
 }
 
-dependencies {
-    implementation(projects.tsBackendCommon)
+repositories {
+    mavenCentral()
+}
 
+group = "ru.jetlabs"
+
+dependencies {
     implementation(libs.kotlin.reflect)
 
     implementation(libs.spring.boot.starter)
