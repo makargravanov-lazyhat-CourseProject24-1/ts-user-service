@@ -11,4 +11,6 @@ class UserServiceApplication
 
 fun main(args: Array<String>) {
     runApplication<UserServiceApplication>(*args)
+
+        // saopikmasdofpijnmfepiosjnsofidnd
 }
