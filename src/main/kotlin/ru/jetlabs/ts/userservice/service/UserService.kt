@@ -7,11 +7,7 @@ import org.jetbrains.exposed.sql.update
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import ru.jetlabs.ts.userservice.models.UserCreateForm
-import ru.jetlabs.ts.userservice.models.UserResponseForm
-import ru.jetlabs.ts.userservice.models.UserUpdateForm
-import ru.jetlabs.ts.userservice.models.UserUpdatePasswordForm
-import ru.jetlabs.ts.userservice.rest.UserFindForm
+import ru.jetlabs.ts.userservice.models.*
 import ru.jetlabs.ts.userservice.tables.Users
 
 @Component
@@ -44,7 +40,7 @@ class UserService {
         } else false
     }
 
-    fun update(form: UserUpdateForm): Int = Users.update {
+    fun update(form: UserUpdateForm): Int = Users.update({ Users.id eq form.id }) {
         it[firstName] = form.firstName
         it[lastName] = form.lastName
         it[middleName] = form.middleName
