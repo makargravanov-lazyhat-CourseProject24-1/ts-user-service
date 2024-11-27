@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SERVICE_NAME = "${JOB_NAME}"
+        SERVICE_NAME = "ts-user-service"
         HTTP_PORT = 8080
         DB_URL = credentials("common-db-url")
         DB_USERNAME = credentials("common-db-username")
