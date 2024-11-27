@@ -18,7 +18,7 @@ pipeline {
         }
         stage("Image"){
             steps {
-                sh "sudo docker build -t jetlabs/${SERVICE_NAME}:latest -t jetlabs/${SERVICE_NAME}:${BUILD_NUMBER} --build-arg name=${SERVICE_NAME}"
+                sh "sudo docker build -t jetlabs/${SERVICE_NAME}:latest -t jetlabs/${SERVICE_NAME}:${BUILD_NUMBER} --build-arg name=${SERVICE_NAME} ."
             }
         }
         stage("Deploy"){
