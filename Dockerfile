@@ -11,4 +11,6 @@ USER spring:spring
 
 COPY ./build/libs/${JAR_NAME} ${JAR_NAME}
 
+ENTRYPOINT ["ls", "/app"]
+
 #ENTRYPOINT ["java", "-jar", "/app/*.jar"]
