@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Build'){
             steps {
+                sh "chmod 755 $USER ./gradlew"
                 sh "./gradlew build"
             }
         }
