@@ -31,7 +31,7 @@ pipeline {
                         echo "Container does not exists."
                     }
                 }
-                sh "sudo docker run --name ${SERVICE_NAME} -p 8021:${HTTP_PORT} --interactive --tty jetlabs/${SERVICE_NAME}:latest"
+                sh "sudo docker run --name ${SERVICE_NAME} -p 8021:${HTTP_PORT} jetlabs/${SERVICE_NAME}:latest"
             }
         }
     }
