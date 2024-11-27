@@ -8,7 +8,7 @@ import ru.jetlabs.ts.userservice.models.UserUpdatePasswordForm
 import ru.jetlabs.ts.userservice.service.UserService
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/api/v1")
 class UserServiceController(
     private val userService: UserService
 ) {
