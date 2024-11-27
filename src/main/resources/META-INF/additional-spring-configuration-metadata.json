@@ -1,8 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "url.prefix",
-      "type": "java.lang.String",
-      "description": "Префикс для вызовов других сервисов по REST API."
-  }
-] }
