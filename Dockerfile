@@ -1,6 +1,6 @@
 FROM eclipse-temurin:21
 
-WORKDIR ./app
+WORKDIR /app
 
 ARG name
 
@@ -9,6 +9,6 @@ ENV JAR_NAME "${name}.jar"
 RUN groupadd spring && useradd -g spring spring
 USER spring:spring
 
-COPY ./build/libs/${JAR_NAME} ./${JAR_NAME}
+COPY ./build/libs/${JAR_NAME} ${JAR_NAME}
 
-ENTRYPOINT ["java", "-jar", "./app/*.jar"]
+ENTRYPOINT ["java", "-jar", "/app/*.jar"]
