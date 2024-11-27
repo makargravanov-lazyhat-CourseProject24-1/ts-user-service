@@ -3,7 +3,6 @@ spring:
     name: ts-user-service
   datasource:
     url: "postgresql:5432"
-    l
 
 server:
   port: 8080
