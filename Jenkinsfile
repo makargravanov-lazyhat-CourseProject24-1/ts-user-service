@@ -25,7 +25,7 @@ pipeline {
             steps {
                 try {
                     sh "sudo docker container stop ${SERVICE_NAME}"
-                } catch {
+                } catch(err) {
                     echo "Container does not exists."
                 }
                 sh "sudo docker container rm ${SERVICE_NAME}"
