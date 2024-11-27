@@ -2,7 +2,7 @@ spring:
   application:
     name: ts-user-service
   datasource:
-    url: "jdbc:postgresql://${DB_URL}/ts-user-service"
+    url: "jdbc:postgresql://${DB_URL}/${spring.application.name}"
     driver-class-name: org.postgresql.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
