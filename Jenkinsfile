@@ -23,7 +23,7 @@ pipeline {
         }
         stage("Deploy"){
             steps {
-                sh "sudo docker run --name ${SERVICE_NAME} --expose 8021:${HTTP_PORT}  jetlabs/${SERVICE_NAME}:latest"
+                sh "sudo docker run --name ${SERVICE_NAME} -p 8021:${HTTP_PORT} jetlabs/${SERVICE_NAME}:latest"
             }
         }
     }
