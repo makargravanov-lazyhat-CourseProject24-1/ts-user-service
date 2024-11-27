@@ -13,11 +13,17 @@ const val ID = "id"
 
 const val CHANGE_PASSWORD = "changepass"
 
+const val VERSION_1 = "v1"
+
 @RestController
-@RequestMapping("/$USERS")
+@RequestMapping("$VERSION_1")
 class UserServiceController(
     private val userService: UserService
 ) {
+    @PostMapping("/find")
+    fun getByEmailAndPassword(@RequestBody form: UserFindForm): ResponseEntity<UserResponseForm> =
+        userService.findByEmailAndPassword(form)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
+
     @GetMapping("/{$ID}")
     fun getById(@PathVariable id: Long): ResponseEntity<UserResponseForm> =
         userService.getById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.noContent().build()
@@ -26,7 +32,8 @@ class UserServiceController(
     fun changePassword(@RequestBody form: UserUpdatePasswordForm): ResponseEntity<Boolean> =
         userService.updatePassword(form).let { ResponseEntity.ok(it) }
 
-    @PostMapping
-    fun create(@RequestBody form: UserCreateForm): ResponseEntity<Long> =
-        userService.create(form).let { ResponseEntity.ok(it) }
+    @PostMapping("/create")
+    fun create(@RequestBody form: UserCreateForm): ResponseEntity<Nothing> = ResponseEntity.noContent().build()
 }
+
+data class UserFindForm(val email: String, val password: String)

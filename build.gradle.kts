@@ -19,9 +19,11 @@ dependencies {
 
     implementation(libs.spring.boot.starter)
     implementation(libs.spring.boot.webMVC)
+    implementation(libs.spring.boot.security)
     implementation(libs.spring.boot.exposed)
     implementation(libs.exposed.jdbc)
     implementation(libs.exposed.javaTime)
+    implementation(libs.springdoc.openapi)
 
     runtimeOnly(libs.postgresqlDriver)
 }

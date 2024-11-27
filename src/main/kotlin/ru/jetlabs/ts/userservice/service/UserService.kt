@@ -1,5 +1,6 @@
 package ru.jetlabs.ts.userservice.service
 
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.update
@@ -9,27 +10,18 @@ import ru.jetlabs.ts.userservice.models.UserCreateForm
 import ru.jetlabs.ts.userservice.models.UserResponseForm
 import ru.jetlabs.ts.userservice.models.UserUpdateForm
 import ru.jetlabs.ts.userservice.models.UserUpdatePasswordForm
+import ru.jetlabs.ts.userservice.rest.UserFindForm
 import ru.jetlabs.ts.userservice.tables.Users
 
 @Component
 @Transactional
 class UserService {
 
-    fun getById(id: Long): UserResponseForm? = Users.selectAll().where { Users.id eq id }.singleOrNull()?.let {
-        UserResponseForm(
-            id = it[Users.id].value,
-            firstName = it[Users.firstName],
-            lastName = it[Users.lastName],
-            middleName = it[Users.middleName],
-            email = it[Users.email],
-            emailVerified = it[Users.emailVerified],
-            passportSeries = it[Users.passportSeries],
-            passportNumber = it[Users.passportNumber],
-            phone = it[Users.phone],
-            phoneVerified = it[Users.phoneVerified],
-            createdAt = it[Users.createdAt]
-        )
-    }
+    fun findByEmailAndPassword(form: UserFindForm): UserResponseForm? =
+        Users.selectAll().where { Users.email eq form.email }.singleOrNull()?.mapToUserResponseForm()
+
+    fun getById(id: Long): UserResponseForm? =
+        Users.selectAll().where { Users.id eq id }.singleOrNull()?.mapToUserResponseForm()
 
     fun create(form: UserCreateForm): Long = Users.insertAndGetId {
         it[firstName] = form.firstName
@@ -58,5 +50,20 @@ class UserService {
         it[phone] = form.phone
         it[phoneVerified] = form.phoneVerified
     }
+
+    fun ResultRow.mapToUserResponseForm(): UserResponseForm =
+        UserResponseForm(
+            id = this[Users.id].value,
+            firstName = this[Users.firstName],
+            lastName = this[Users.lastName],
+            middleName = this[Users.middleName],
+            email = this[Users.email],
+            emailVerified = this[Users.emailVerified],
+            passportSeries = this[Users.passportSeries],
+            passportNumber = this[Users.passportNumber],
+            phone = this[Users.phone],
+            phoneVerified = this[Users.phoneVerified],
+            createdAt = this[Users.createdAt]
+        )
 }
 
