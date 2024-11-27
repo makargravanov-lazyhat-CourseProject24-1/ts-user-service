@@ -13,4 +13,4 @@ COPY ./build/libs/${JAR_NAME} ${JAR_NAME}
 
 ENTRYPOINT ["ls", "/app"]
 
-#ENTRYPOINT ["java", "-jar", "/app/*.jar"]
+ENTRYPOINT ["java", "-jar", "/app/ts-user-service.jar"]
