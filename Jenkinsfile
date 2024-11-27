@@ -23,7 +23,7 @@ pipeline {
         }
         stage("Deploy"){
             steps {
-                step {
+                script {
                     try {
                         sh "sudo docker container stop ${SERVICE_NAME}"
                     } catch(err) {
