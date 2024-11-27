@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Build'){
             steps {
+                sh "sudo docker ps"
                 sh "chmod a+x ./gradlew"
                 sh "./gradlew build"
             }
