@@ -14,7 +14,6 @@ data class UserUpdateForm(
 )
 
 data class UserUpdatePasswordForm(
-    val id: Long,
     val previousPassword: String,
     val newPassword: String,
 )

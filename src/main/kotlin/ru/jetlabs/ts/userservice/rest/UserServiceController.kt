@@ -7,33 +7,25 @@ import ru.jetlabs.ts.userservice.models.UserResponseForm
 import ru.jetlabs.ts.userservice.models.UserUpdatePasswordForm
 import ru.jetlabs.ts.userservice.service.UserService
 
-const val ID = "id"
-
-const val CHANGE_PASSWORD = "change-password"
-const val FIND = "find"
-const val CREATE = "create"
-
-const val VERSION_1 = "v1"
-
 @RestController
-@RequestMapping("/$VERSION_1")
+@RequestMapping("/v1")
 class UserServiceController(
     private val userService: UserService
 ) {
-    @PostMapping("/$FIND")
+    @PostMapping("/find")
     fun getByEmailAndPassword(@RequestBody form: UserFindForm): ResponseEntity<UserResponseForm> =
         userService.findByEmailAndPassword(form)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
 
-    @GetMapping("/{$ID}")
+    @PostMapping("/create")
+    fun create(@RequestBody form: UserCreateForm): ResponseEntity<Nothing> = ResponseEntity.noContent().build()
+
+    @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): ResponseEntity<UserResponseForm> =
         userService.getById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.noContent().build()
 
-    @PostMapping("/$ID/$CHANGE_PASSWORD")
-    fun changePassword(@RequestBody form: UserUpdatePasswordForm): ResponseEntity<Boolean> =
-        userService.updatePassword(form).let { ResponseEntity.ok(it) }
-
-    @PostMapping("/$CREATE")
-    fun create(@RequestBody form: UserCreateForm): ResponseEntity<Nothing> = ResponseEntity.noContent().build()
+    @PostMapping("/{id}/change-password")
+    fun changePassword(@PathVariable id: Long, @RequestBody form: UserUpdatePasswordForm): ResponseEntity<Boolean> =
+        userService.updatePassword(id, form).let { ResponseEntity.ok(it) }
 }
 
 data class UserFindForm(val email: String, val password: String)

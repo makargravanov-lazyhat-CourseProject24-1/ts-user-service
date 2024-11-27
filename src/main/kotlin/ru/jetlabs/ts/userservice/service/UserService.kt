@@ -33,12 +33,12 @@ class UserService {
         it[password] = BCrypt.hashpw(form.password, BCrypt.gensalt())
     }.value
 
-    fun updatePassword(form: UserUpdatePasswordForm): Boolean {
+    fun updatePassword(id: Long, form: UserUpdatePasswordForm): Boolean {
         val currentPassword =
-            Users.select(Users.password).where { Users.id eq form.id }.singleOrNull()?.get(Users.password)
+            Users.select(Users.password).where { Users.id eq id }.singleOrNull()?.get(Users.password)
 
         return if (BCrypt.checkpw(form.previousPassword, currentPassword)) {
-            Users.update(where = { Users.id eq form.id }) {
+            Users.update(where = { Users.id eq id }) {
                 it[password] = BCrypt.hashpw(form.newPassword, BCrypt.gensalt())
             } == 1
         } else false
