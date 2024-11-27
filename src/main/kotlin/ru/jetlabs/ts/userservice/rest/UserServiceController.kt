@@ -7,20 +7,20 @@ import ru.jetlabs.ts.userservice.models.UserResponseForm
 import ru.jetlabs.ts.userservice.models.UserUpdatePasswordForm
 import ru.jetlabs.ts.userservice.service.UserService
 
-const val USERS = "users"
-
 const val ID = "id"
 
-const val CHANGE_PASSWORD = "changepass"
+const val CHANGE_PASSWORD = "change-password"
+const val FIND = "find"
+const val CREATE = "create"
 
 const val VERSION_1 = "v1"
 
 @RestController
-@RequestMapping("$VERSION_1")
+@RequestMapping("/$VERSION_1")
 class UserServiceController(
     private val userService: UserService
 ) {
-    @PostMapping("/find")
+    @PostMapping("/$FIND")
     fun getByEmailAndPassword(@RequestBody form: UserFindForm): ResponseEntity<UserResponseForm> =
         userService.findByEmailAndPassword(form)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
 
@@ -32,7 +32,7 @@ class UserServiceController(
     fun changePassword(@RequestBody form: UserUpdatePasswordForm): ResponseEntity<Boolean> =
         userService.updatePassword(form).let { ResponseEntity.ok(it) }
 
-    @PostMapping("/create")
+    @PostMapping("/$CREATE")
     fun create(@RequestBody form: UserCreateForm): ResponseEntity<Nothing> = ResponseEntity.noContent().build()
 }
 
