@@ -11,14 +11,8 @@ pipeline {
     stages {
         stage('Build'){
             steps {
-                sh "sudo docker ps"
                 sh "chmod a+x ./gradlew"
-                sh "./gradlew build"
-            }
-        }
-        stage('Image'){
-            steps {
-                sh "sudo docker ps"
+                sh "./gradlew bootBuildImage"
             }
         }
         stage('Deploy'){
