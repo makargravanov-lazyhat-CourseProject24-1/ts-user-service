@@ -4,6 +4,7 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.update
+import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import ru.jetlabs.ts.userservice.models.UserCreateForm
@@ -18,7 +19,9 @@ import ru.jetlabs.ts.userservice.tables.Users
 class UserService {
 
     fun findByEmailAndPassword(form: UserFindForm): UserResponseForm? =
-        Users.selectAll().where { Users.email eq form.email }.singleOrNull()?.mapToUserResponseForm()
+        Users.selectAll().where { Users.email eq form.email }.singleOrNull()?.takeIf {
+            BCrypt.checkpw(form.password, it[Users.password])
+        }?.mapToUserResponseForm()
 
     fun getById(id: Long): UserResponseForm? =
         Users.selectAll().where { Users.id eq id }.singleOrNull()?.mapToUserResponseForm()
@@ -27,15 +30,17 @@ class UserService {
         it[firstName] = form.firstName
         it[lastName] = form.lastName
         it[email] = form.email
-        it[password] = form.password
+        it[password] = BCrypt.hashpw(form.password, BCrypt.gensalt())
     }.value
 
     fun updatePassword(form: UserUpdatePasswordForm): Boolean {
         val currentPassword =
             Users.select(Users.password).where { Users.id eq form.id }.singleOrNull()?.get(Users.password)
 
-        return if (currentPassword == form.previousPassword) {
-            Users.update(where = { Users.id eq form.id }) { it[password] = form.newPassword } == 1
+        return if (BCrypt.checkpw(form.previousPassword, currentPassword)) {
+            Users.update(where = { Users.id eq form.id }) {
+                it[password] = BCrypt.hashpw(form.newPassword, BCrypt.gensalt())
+            } == 1
         } else false
     }
 
