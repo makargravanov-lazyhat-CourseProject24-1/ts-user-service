@@ -23,7 +23,7 @@ pipeline {
         }
         stage("Deploy"){
             steps {
-                sh "sudo docker run --name ${SERVICE_NAME}"
+                sh "sudo docker run --name ${SERVICE_NAME} jetlabs/${SERVICE_NAME}:latest"
             }
         }
     }
