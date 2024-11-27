@@ -23,6 +23,8 @@ pipeline {
         }
         stage("Deploy"){
             steps {
+                sh "sudo docker container stop ${SERVICE_NAME}"
+                sh "sudo docker container rm ${SERVICE_NAME}"
                 sh "sudo docker run --name ${SERVICE_NAME} -p 8021:${HTTP_PORT} jetlabs/${SERVICE_NAME}:latest"
             }
         }
