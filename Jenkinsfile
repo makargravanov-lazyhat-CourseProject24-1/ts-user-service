@@ -23,10 +23,12 @@ pipeline {
         }
         stage("Deploy"){
             steps {
-                try {
-                    sh "sudo docker container stop ${SERVICE_NAME}"
-                } catch(err) {
-                    echo "Container does not exists."
+                step {
+                    try {
+                        sh "sudo docker container stop ${SERVICE_NAME}"
+                    } catch(err) {
+                        echo "Container does not exists."
+                    }
                 }
                 sh "sudo docker container rm ${SERVICE_NAME}"
                 sh "sudo docker run --name ${SERVICE_NAME} -p 8021:${HTTP_PORT} --interactive --tty jetlabs/${SERVICE_NAME}:latest"
