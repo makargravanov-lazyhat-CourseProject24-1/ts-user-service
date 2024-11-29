@@ -9,8 +9,6 @@ ENV JAR_NAME "${name}.jar"
 RUN groupadd spring && useradd -g spring spring
 USER spring:spring
 
-COPY ./build/libs/${JAR_NAME} ${JAR_NAME}
-
-ENTRYPOINT ["ls", "/app"]
+COPY ./build/libs/${JAR_NAME} ./${JAR_NAME}
 
 ENTRYPOINT ["java", "-jar", "/app/ts-user-service.jar"]
