@@ -1,5 +1,6 @@
 package ru.jetlabs.ts.userservice.rest
 
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ru.jetlabs.ts.userservice.models.UserCreateForm
@@ -19,7 +20,7 @@ class UserServiceController(
 
     @PostMapping("/create")
     fun create(@RequestBody form: UserCreateForm): ResponseEntity<Nothing> =
-        userService.create(form).let { ResponseEntity.noContent().build() }
+        userService.create(form).let { ResponseEntity.status(HttpStatus.CREATED).build() }
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): ResponseEntity<UserResponseForm> =
