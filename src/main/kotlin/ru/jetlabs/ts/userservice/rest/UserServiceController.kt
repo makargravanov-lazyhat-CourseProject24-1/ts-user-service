@@ -3,10 +3,7 @@ package ru.jetlabs.ts.userservice.rest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import ru.jetlabs.ts.userservice.models.UserCreateForm
-import ru.jetlabs.ts.userservice.models.UserFindForm
-import ru.jetlabs.ts.userservice.models.UserResponseForm
-import ru.jetlabs.ts.userservice.models.UserUpdatePasswordForm
+import ru.jetlabs.ts.userservice.models.*
 import ru.jetlabs.ts.userservice.service.UserService
 
 @RestController
@@ -25,6 +22,10 @@ class UserServiceController(
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): ResponseEntity<UserResponseForm> =
         userService.getById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.noContent().build()
+
+    @PostMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody form: UserUpdateForm): ResponseEntity<Nothing> =
+        userService.update(id, form).let { if(it) ResponseEntity.ok().build() else ResponseEntity.badRequest().build() }
 
     @PostMapping("/{id}/change-password")
     fun changePassword(@PathVariable id: Long, @RequestBody form: UserUpdatePasswordForm): ResponseEntity<Boolean> =

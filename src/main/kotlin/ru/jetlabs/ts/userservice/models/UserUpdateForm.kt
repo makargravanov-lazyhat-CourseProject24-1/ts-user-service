@@ -17,9 +17,3 @@ data class UserUpdatePasswordForm(
     val previousPassword: String,
     val newPassword: String,
 )
-
-data class UserUpdatePassportForm(
-    val id: Long,
-    val passportSeries: String,
-    val passportNumber: String,
-)

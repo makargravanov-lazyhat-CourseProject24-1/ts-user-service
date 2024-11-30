@@ -40,7 +40,7 @@ class UserService {
         } else false
     }
 
-    fun update(form: UserUpdateForm): Int = Users.update({ Users.id eq form.id }) {
+    fun update(id: Long, form: UserUpdateForm): Boolean = Users.update({ Users.id eq form.id }) {
         it[firstName] = form.firstName
         it[lastName] = form.lastName
         it[middleName] = form.middleName
@@ -50,7 +50,7 @@ class UserService {
         it[passportNumber] = form.passportNumber
         it[phone] = form.phone
         it[phoneVerified] = form.phoneVerified
-    }
+    } == 1
 
     fun ResultRow.mapToUserResponseForm(): UserResponseForm =
         UserResponseForm(
