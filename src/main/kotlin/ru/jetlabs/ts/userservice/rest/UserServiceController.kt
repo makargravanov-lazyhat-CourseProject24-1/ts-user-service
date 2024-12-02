@@ -20,9 +20,10 @@ class UserServiceController(
         userService.create(form).let { ResponseEntity.status(HttpStatus.CREATED).build() }
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: Long): ResponseEntity<UserResponseForm> =
-        userService.getById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.noContent().build()
-
+    fun getById(@PathVariable id: Long): ResponseEntity<UserResponseForm> {
+        print(id)
+        return userService.getById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.noContent().build()
+    }
     @PostMapping("/{id}")
     fun update(@PathVariable id: Long, @RequestBody form: UserUpdateForm): ResponseEntity<Nothing> =
         userService.update(id, form).let { if(it) ResponseEntity.ok().build() else ResponseEntity.badRequest().build() }
