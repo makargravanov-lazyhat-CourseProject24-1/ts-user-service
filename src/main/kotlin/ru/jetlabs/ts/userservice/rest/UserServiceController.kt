@@ -24,7 +24,7 @@ class UserServiceController(
         print(id)
         return userService.getById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.noContent().build()
     }
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/update")
     fun update(@PathVariable id: Long, @RequestBody form: UserUpdateForm): ResponseEntity<Nothing> =
         userService.update(id, form).let { if(it) ResponseEntity.ok().build() else ResponseEntity.badRequest().build() }
 
