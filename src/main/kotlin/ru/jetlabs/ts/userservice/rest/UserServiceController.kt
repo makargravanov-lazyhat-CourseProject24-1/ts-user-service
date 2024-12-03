@@ -21,7 +21,7 @@ class UserServiceController(
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): ResponseEntity<UserResponseForm> {
-        print(id)
+        println(id)
         return userService.getById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.noContent().build()
     }
     @PostMapping("/{id}/update")
