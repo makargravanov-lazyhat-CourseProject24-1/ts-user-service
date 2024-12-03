@@ -1,6 +1,5 @@
 package ru.jetlabs.ts.userservice.rest
 
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ru.jetlabs.ts.userservice.models.*
@@ -13,22 +12,47 @@ class UserServiceController(
 ) {
     @PostMapping("/find")
     fun getByEmailAndPassword(@RequestBody form: UserFindForm): ResponseEntity<UserResponseForm> =
-        userService.findByEmailAndPassword(form)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
+        userService.findByEmailAndPassword(form).let {
+            when (it) {
+                FindByEmailAndPasswordResult.NotFound -> ResponseEntity.notFound().build()
+                is FindByEmailAndPasswordResult.Success -> ResponseEntity.ok(it.userResponseForm)
+            }
+        }
 
     @PostMapping("/create")
-    fun create(@RequestBody form: UserCreateForm): ResponseEntity<Nothing> =
-        userService.create(form).let { ResponseEntity.status(HttpStatus.CREATED).build() }
+    fun create(@RequestBody form: UserCreateForm): ResponseEntity<*> =
+        userService.create(form).let {
+            when (it) {
+                is CreateResult.Error -> ResponseEntity.badRequest().body(it.message)
+                is CreateResult.Success -> ResponseEntity.ok().build()
+            }
+        }
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: Long): ResponseEntity<UserResponseForm> {
-        println(id)
-        return userService.getById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.noContent().build()
+    fun getById(@PathVariable id: Long): ResponseEntity<UserResponseForm> = userService.getById(id).let {
+        when (it) {
+            GetByIdResult.NotFound -> ResponseEntity.notFound().build()
+            is GetByIdResult.Success -> ResponseEntity.ok(it.userResponseForm)
+        }
     }
+
     @PostMapping("/{id}/update")
-    fun update(@PathVariable id: Long, @RequestBody form: UserUpdateForm): ResponseEntity<Nothing> =
-        userService.update(id, form).let { if(it) ResponseEntity.ok().build() else ResponseEntity.badRequest().build() }
+    fun update(@PathVariable id: Long, @RequestBody form: UserUpdateForm): ResponseEntity<*> =
+        userService.update(id, form).let {
+            when (it) {
+                UpdateResult.Success -> ResponseEntity.ok().build()
+                is UpdateResult.Error.Unknown -> ResponseEntity.internalServerError().body(it.message)
+                is UpdateResult.Error -> ResponseEntity.badRequest().body(it.message)
+            }
+        }
 
     @PostMapping("/{id}/change-password")
-    fun changePassword(@PathVariable id: Long, @RequestBody form: UserUpdatePasswordForm): ResponseEntity<Boolean> =
-        userService.updatePassword(id, form).let { ResponseEntity.ok(it) }
+    fun changePassword(@PathVariable id: Long, @RequestBody form: UserUpdatePasswordForm): ResponseEntity<*> =
+        userService.updatePassword(id, form).let {
+            when (it) {
+                UpdatePasswordResult.Success -> ResponseEntity.ok().build()
+                is UpdatePasswordResult.Error.Unknown -> ResponseEntity.internalServerError().body(it.message)
+                is UpdatePasswordResult.Error -> ResponseEntity.badRequest().body(it.message)
+            }
+        }
 }
