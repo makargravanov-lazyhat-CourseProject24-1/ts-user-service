@@ -4,9 +4,11 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.update
+import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.bcrypt.BCrypt
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import ru.jetlabs.ts.userservice.UserServiceApplication
 import ru.jetlabs.ts.userservice.models.*
 import ru.jetlabs.ts.userservice.tables.Users
 import java.sql.SQLException
@@ -14,6 +16,9 @@ import java.sql.SQLException
 @Component
 @Transactional
 class UserService {
+    companion object {
+        val LOGGER = LoggerFactory.getLogger(UserServiceApplication::class.java)!!
+    }
 
     fun findByEmailAndPassword(form: UserFindForm): FindByEmailAndPasswordResult =
         Users.selectAll().where { Users.email eq form.email }.singleOrNull()?.takeIf {
@@ -37,7 +42,9 @@ class UserService {
             CreateResult.Success(it)
         }
     } catch (e: SQLException) {
-        CreateResult.Error(e.message ?: e.stackTraceToString())
+        CreateResult.Error(e.message ?: e.stackTraceToString()).also {
+            LOGGER.error(it.toString(), e)
+        }
     }
 
     fun updatePassword(id: Long, form: UserUpdatePasswordForm): UpdatePasswordResult = try {
@@ -58,7 +65,9 @@ class UserService {
                     }
                 }
     } catch (e: SQLException) {
-        UpdatePasswordResult.Error.Unknown(e.message ?: e.stackTraceToString())
+        UpdatePasswordResult.Error.Unknown(e.message ?: e.stackTraceToString()).also {
+            LOGGER.error(it.toString(), e)
+        }
     }
 
     fun update(id: Long, form: UserUpdateForm): UpdateResult = try {
@@ -80,7 +89,9 @@ class UserService {
             }
         }
     } catch (e: SQLException) {
-        UpdateResult.Error.Unknown(e.message ?: e.stackTraceToString())
+        UpdateResult.Error.Unknown(e.message ?: e.stackTraceToString()).also {
+            LOGGER.error(it.toString(), e)
+        }
     }
 
     private fun ResultRow.mapToUserResponseForm(): UserResponseForm = UserResponseForm(

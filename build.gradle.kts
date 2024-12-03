@@ -24,7 +24,6 @@ dependencies {
     implementation(libs.exposed.jdbc)
     implementation(libs.exposed.javaTime)
     implementation(libs.springdoc.openapi)
-
     runtimeOnly(libs.postgresqlDriver)
 }
 
