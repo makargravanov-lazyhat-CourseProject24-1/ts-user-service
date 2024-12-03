@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import ru.jetlabs.ts.userservice.UserServiceApplication
 import ru.jetlabs.ts.userservice.models.*
+import ru.jetlabs.ts.userservice.tables.EMAIL_REGEXP_PATTERN
 import ru.jetlabs.ts.userservice.tables.Users
 import java.sql.SQLException
 
@@ -33,16 +34,19 @@ class UserService {
         } ?: GetByIdResult.NotFound
 
     fun create(form: UserCreateForm): CreateResult = try {
-        Users.insertAndGetId {
-            it[firstName] = form.firstName
-            it[lastName] = form.lastName
-            it[email] = form.email
-            it[password] = BCrypt.hashpw(form.password, BCrypt.gensalt())
-        }.value.let {
-            CreateResult.Success(it)
-        }
+        if (!form.email.matches(EMAIL_REGEXP_PATTERN))
+            CreateResult.Error.IncorrectEmail
+        else
+            Users.insertAndGetId {
+                it[firstName] = form.firstName
+                it[lastName] = form.lastName
+                it[email] = form.email
+                it[password] = BCrypt.hashpw(form.password, BCrypt.gensalt())
+            }.value.let {
+                CreateResult.Success(it)
+            }
     } catch (e: SQLException) {
-        CreateResult.Error(e.message ?: e.stackTraceToString()).also {
+        CreateResult.Error.Unknown(e.message ?: e.stackTraceToString()).also {
             LOGGER.error(it.toString(), e)
         }
     }

@@ -12,7 +12,15 @@ sealed interface GetByIdResult {
 
 sealed interface CreateResult {
     data class Success(val id: Long) : CreateResult
-    data class Error(val message: String) : CreateResult
+    sealed interface Error : CreateResult {
+        val message: String
+
+        data object IncorrectEmail : Error {
+            override val message: String = "Incorrect email"
+        }
+
+        data class Unknown(override val message: String) : Error
+    }
 }
 
 sealed interface UpdatePasswordResult {

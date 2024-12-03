@@ -14,8 +14,8 @@ class UserServiceController(
     fun getByEmailAndPassword(@RequestBody form: UserFindForm): ResponseEntity<UserResponseForm> =
         userService.findByEmailAndPassword(form).let {
             when (it) {
-                FindByEmailAndPasswordResult.NotFound -> ResponseEntity.notFound().build()
                 is FindByEmailAndPasswordResult.Success -> ResponseEntity.ok(it.userResponseForm)
+                FindByEmailAndPasswordResult.NotFound -> ResponseEntity.notFound().build()
             }
         }
 
@@ -23,16 +23,17 @@ class UserServiceController(
     fun create(@RequestBody form: UserCreateForm): ResponseEntity<*> =
         userService.create(form).let {
             when (it) {
-                is CreateResult.Error -> ResponseEntity.badRequest().body(it.message)
                 is CreateResult.Success -> ResponseEntity.ok().build()
+                is CreateResult.Error.Unknown -> ResponseEntity.internalServerError().body(it.message)
+                is CreateResult.Error -> ResponseEntity.badRequest().body(it.message)
             }
         }
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): ResponseEntity<UserResponseForm> = userService.getById(id).let {
         when (it) {
-            GetByIdResult.NotFound -> ResponseEntity.notFound().build()
             is GetByIdResult.Success -> ResponseEntity.ok(it.userResponseForm)
+            GetByIdResult.NotFound -> ResponseEntity.notFound().build()
         }
     }
 
