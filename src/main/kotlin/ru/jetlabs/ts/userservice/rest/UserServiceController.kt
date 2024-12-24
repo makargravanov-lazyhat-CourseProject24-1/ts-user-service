@@ -1,5 +1,6 @@
 package ru.jetlabs.ts.userservice.rest
 
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ru.jetlabs.ts.userservice.models.*
@@ -11,11 +12,14 @@ class UserServiceController(
     private val userService: UserService
 ) {
     @PostMapping("/find")
-    fun getByEmailAndPassword(@RequestBody form: UserFindForm): ResponseEntity<UserResponseForm> =
+    fun getByEmailAndPassword(@RequestBody form: UserFindForm): ResponseEntity<*> =
         userService.findByEmailAndPassword(form).let {
             when (it) {
-                is FindByEmailAndPasswordResult.Success -> ResponseEntity.ok(it.userResponseForm)
-                FindByEmailAndPasswordResult.NotFound -> ResponseEntity.notFound().build()
+                is FindByEmailAndPasswordResult.Success -> ResponseEntity.status(HttpStatus.OK)
+                    .body(it.userResponseForm)
+
+                is FindByEmailAndPasswordResult.NotFound -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(it)
             }
         }
 
@@ -23,17 +27,17 @@ class UserServiceController(
     fun create(@RequestBody form: UserCreateForm): ResponseEntity<*> =
         userService.create(form).let {
             when (it) {
-                is CreateResult.Success -> ResponseEntity.ok().build()
-                is CreateResult.Error.Unknown -> ResponseEntity.internalServerError().body(it.message)
-                is CreateResult.Error -> ResponseEntity.badRequest().body(it.message)
+                is CreateResult.Success -> ResponseEntity.status(HttpStatus.OK).build()
+                is CreateResult.Error.Unknown -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(it.message)
+                is CreateResult.Error -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(it.message)
             }
         }
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: Long): ResponseEntity<UserResponseForm> = userService.getById(id).let {
+    fun getById(@PathVariable id: Long): ResponseEntity<*> = userService.getById(id).let {
         when (it) {
-            is GetByIdResult.Success -> ResponseEntity.ok(it.userResponseForm)
-            GetByIdResult.NotFound -> ResponseEntity.notFound().build()
+            is GetByIdResult.Success -> ResponseEntity.status(HttpStatus.OK).body(it.userResponseForm)
+            is GetByIdResult.NotFound -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
         }
     }
 
@@ -41,9 +45,9 @@ class UserServiceController(
     fun update(@PathVariable id: Long, @RequestBody form: UserUpdateForm): ResponseEntity<*> =
         userService.update(id, form).let {
             when (it) {
-                UpdateResult.Success -> ResponseEntity.ok().build()
-                is UpdateResult.Error.Unknown -> ResponseEntity.internalServerError().body(it.message)
-                is UpdateResult.Error -> ResponseEntity.badRequest().body(it.message)
+                is UpdateResult.Success -> ResponseEntity.status(HttpStatus.OK).build()
+                is UpdateResult.Error.Unknown -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(it.message)
+                is UpdateResult.Error -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(it.message)
             }
         }
 
@@ -51,9 +55,9 @@ class UserServiceController(
     fun changePassword(@PathVariable id: Long, @RequestBody form: UserUpdatePasswordForm): ResponseEntity<*> =
         userService.updatePassword(id, form).let {
             when (it) {
-                UpdatePasswordResult.Success -> ResponseEntity.ok().build()
-                is UpdatePasswordResult.Error.Unknown -> ResponseEntity.internalServerError().body(it.message)
-                is UpdatePasswordResult.Error -> ResponseEntity.badRequest().body(it.message)
+                is UpdatePasswordResult.Success -> ResponseEntity.status(HttpStatus.OK).build()
+                is UpdatePasswordResult.Error.Unknown -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(it.message)
+                is UpdatePasswordResult.Error -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(it.message)
             }
         }
 }
