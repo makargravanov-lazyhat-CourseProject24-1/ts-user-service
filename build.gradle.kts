@@ -1,11 +1,15 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.spring.kotlin)
-    alias(libs.plugins.spring.boot)
-    alias(libs.plugins.spring.dependencyManagement)
+    val kotlin = "2.1.0"
+    val springBoot = "3.4.0"
+    val springDependencyManagement = "1.1.6"
+
+    kotlin("jvm") version kotlin
+    kotlin("plugin.serialization") version kotlin
+    kotlin("plugin.spring") version kotlin
+    id("org.springframework.boot") version springBoot
+    id("io.spring.dependency-management") version springDependencyManagement
 }
 
 repositories {
@@ -15,16 +19,15 @@ repositories {
 group = "ru.jetlabs"
 
 dependencies {
-    implementation(libs.kotlin.reflect)
+    val exposed = "0.56.0"
 
-    implementation(libs.spring.boot.starter)
-    implementation(libs.spring.boot.webMVC)
-    implementation(libs.spring.boot.security)
-    implementation(libs.spring.boot.exposed)
-    implementation(libs.exposed.jdbc)
-    implementation(libs.exposed.javaTime)
-    implementation(libs.springdoc.openapi)
-    runtimeOnly(libs.postgresqlDriver)
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.jetbrains.exposed:exposed-spring-boot-starter:$exposed")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposed")
+    runtimeOnly("org.postgresql:postgresql")
 }
 
 kotlin {
